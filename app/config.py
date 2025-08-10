@@ -1,5 +1,9 @@
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load variables from .env if present
+load_dotenv()
 
 
 def get_env(name: str, default: Optional[str] = None) -> Optional[str]:
