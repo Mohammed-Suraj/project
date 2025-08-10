@@ -43,3 +43,30 @@ def search_people(query: str, page: int = 1) -> List[Dict[str, Any]]:
 def get_person_details(person_id: int) -> Optional[Dict[str, Any]]:
     data = _tmdb_get(f"/person/{person_id}", {"append_to_response": "combined_credits,images"})
     return data
+
+# Tamil / Kollywood helpers
+
+def discover_movies_by_language(lang: str = "ta", page: int = 1) -> List[Dict[str, Any]]:
+    params = {
+        "with_original_language": lang,
+        "sort_by": "popularity.desc",
+        "page": page,
+    }
+    data = _tmdb_get("/discover/movie", params)
+    if not data:
+        return []
+    return data.get("results", [])
+
+
+def filter_people_by_known_for_language(people: List[Dict[str, Any]], lang: str = "ta") -> List[Dict[str, Any]]:
+    filtered: List[Dict[str, Any]] = []
+    for person in people:
+        known_for = person.get("known_for", [])
+        if any((item.get("original_language") == lang) for item in known_for if isinstance(item, dict)):
+            filtered.append(person)
+    return filtered
+
+
+def search_people_tamil(query: str, page: int = 1) -> List[Dict[str, Any]]:
+    raw = search_people(query, page=page)
+    return filter_people_by_known_for_language(raw, lang="ta")
