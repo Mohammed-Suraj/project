@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import clsx from 'clsx'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+const API_BASE = (typeof window !== 'undefined' ? window.location.origin : '') || import.meta.env.VITE_API_BASE || 'http://localhost:8000'
 
 export function ChatPanel({ sessionId, onUpdate, onLoading }: {
   sessionId: string
